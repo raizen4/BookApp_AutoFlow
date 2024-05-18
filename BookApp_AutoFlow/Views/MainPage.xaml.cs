@@ -1,4 +1,4 @@
-﻿namespace BookApp_AutoFlow;
+﻿namespace BookApp_AutoFlow.Views;
 
 public partial class MainPage : ContentPage
 {
