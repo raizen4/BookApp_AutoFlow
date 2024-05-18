@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookApp_AutoFlow", "BookApp_AutoFlow\BookApp_AutoFlow.csproj", "{A09FC464-BFAA-44EA-B942-F82E5308539D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E8BAAD66-2586-465F-943D-22610EB6D439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{A09FC464-BFAA-44EA-B942-F82E5308539D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A09FC464-BFAA-44EA-B942-F82E5308539D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A09FC464-BFAA-44EA-B942-F82E5308539D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8BAAD66-2586-465F-943D-22610EB6D439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8BAAD66-2586-465F-943D-22610EB6D439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8BAAD66-2586-465F-943D-22610EB6D439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8BAAD66-2586-465F-943D-22610EB6D439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
