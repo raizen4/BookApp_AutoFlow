@@ -3,14 +3,13 @@
     x:Class="BookApp_AutoFlow.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:BookApp_AutoFlow"
     xmlns:views="clr-namespace:BookApp_AutoFlow.Views"
+    xmlns:xaml="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
     Shell.FlyoutBehavior="Disabled"
     Title="BookApp_AutoFlow">
 
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
+        Title="Books Page"
+        xaml:MauiMicro.Route= "BooksPage" />
 
 </Shell>

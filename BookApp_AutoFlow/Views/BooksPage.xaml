@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:BookApp_AutoFlow.ViewModels"
+             x:Class="BookApp_AutoFlow.Views.BooksPage"
+             xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
+             xmlns:models="clr-namespace:BookApp_AutoFlow.Models"
+             xmlns:m="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             micro:MauiMicro.Autowire="True"
+             Shell.NavBarIsVisible="True"
+             x:DataType="viewModels:BooksPageViewModel">
+    <VerticalStackLayout VerticalOptions="FillAndExpand">
+        <SearchBar x:Name="searchBar"
+                   BackgroundColor="White"
+                   SearchCommand="{Binding PerformSearchCommand}"
+                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
+        <Grid Padding="10" VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="95*" />
+                <RowDefinition Height="5*" />
+            </Grid.RowDefinitions>
+            <CollectionView BackgroundColor="Blue" VerticalOptions="Fill" SelectedItem="{Binding SelectedBook}"
+                            SelectionChangedCommand="{Binding ItemSelectedCommand}" 
+                            ItemsSource="{Binding Books}"
+                            SelectionChangedCommandParameter="{Binding .}"
+                            SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Book">
+                        <SwipeView>
+                            <Frame CornerRadius="10" Padding="10" Margin="5" HasShadow="false"
+                                   BackgroundColor="{DynamicResource FrameBackgroundColor}">
+                                <StackLayout>
+                                    <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Text="{Binding Author}" FontSize="16"
+                                           TextColor="{DynamicResource SecondaryTextColor}" />
+                                    <Label Text="{Binding PublicationYear}" FontSize="14"
+                                           TextColor="{DynamicResource SecondaryTextColor}" />
+                                    <Label Text="{Binding Description}" FontSize="12"
+                                           TextColor="{DynamicResource SecondaryTextColor}"
+                                           LineBreakMode="TailTruncation" MaxLines="3" />
+                                </StackLayout>
+                            </Frame>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Edit"
+                                               BackgroundColor="LightGreen"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=NavigateToBookDetailsCommand}"
+                                               CommandParameter="{Binding .}" />
+                                    <SwipeItem Text="Delete"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=RemoveBookCommand}"
+                                               CommandParameter="{Binding .}"
+                                               BackgroundColor="LightPink" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <StackLayout HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="Red" Grid.Row="1">
+                <Button VerticalOptions="End" Text="Add New Book" Command="{Binding AddBookCommand}" ></Button>
+            </StackLayout>
+        </Grid>
+    </VerticalStackLayout>
+
+
+</ContentPage>
