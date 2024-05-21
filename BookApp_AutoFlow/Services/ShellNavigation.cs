@@ -13,7 +13,7 @@ public class ShellNavigation : IShellNavigation
     {
        await Shell.Current.GoToAsync(route, animated);
     }
-
+    
     public async Task GoToAsync(string route, ShellNavigationQueryParameters parameters)
     {
         await Shell.Current.GoToAsync(route,parameters);

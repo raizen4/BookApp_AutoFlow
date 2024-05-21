@@ -3,19 +3,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:BookApp_AutoFlow.ViewModels"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:xaml="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
              xmlns:controls="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
+             xmlns:validations="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="BookApp_AutoFlow.Views.AddOrUpdateBookDetailsPage"
              xaml:MauiMicro.Autowire="True"
+             Title="{Binding Title}"
              x:DataType="viewModels:AddOrUpdateBookDetailsPageViewModel">
-        <StackLayout Spacing="10">
-            <controls:FormView SubmitCommand="{Binding SubmitCommand}">
-                <!-- ... -->
-                <Button Text="Submit"
-                        controls:FormView.IsSubmitButton="True"
-                        Command="{Binding SubmitCommand}"
-                        StyleClass="FilledButton"/>
-            </controls:FormView>                
-             
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <StackLayout Margin="20">
+            <controls:FormView Spacing="30" SubmitCommand="{Binding SubmitCommand}">
+                <material:TextField Title="Title" Text="{Binding Book.Title}">
+                    <validations:RequiredValidation Message="This field is mandatory" />
+                </material:TextField>
+                <material:TextField Title="Author" Text="{Binding Book.Author}">
+                    <validations:RequiredValidation Message="This field is mandatory" />
+
+                </material:TextField>
+                <material:TextField Title="Genre" Text="{Binding Book.Genre}">
+                    <validations:RequiredValidation Message="This field is mandatory" />
+
+                </material:TextField>
+                <material:TextField Keyboard="Numeric" Title="Publish Year" Text="{Binding Book.PublicationYear}">
+                    <validations:RequiredValidation Message="This field is mandatory" />
+                </material:TextField>
+                <material:EditorField Title="Description" Text="{Binding Book.Description}" />
+                <Button  Text="Submit Form" HorizontalOptions="Fill"  controls:FormView.IsSubmitButton="True" />
+            </controls:FormView>
         </StackLayout>
+    </ScrollView>
+
 </ContentPage>

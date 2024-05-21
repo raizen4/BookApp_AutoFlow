@@ -34,12 +34,13 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
-        builder.Services.AddSingleton<Shell>(x => new AppShell());
         builder.Services.MapView<BooksPage, BooksPageViewModel>();
         builder.Services.MapView<AppShell, AppShellViewModel>();
         builder.Services.MapView<BookDetailPage, BookDetailsPageViewModel>();
         builder.Services.MapView<AddOrUpdateBookDetailsPage, AddOrUpdateBookDetailsPageViewModel>();
-
+        
+        builder.Services.AddSingleton<Shell>(x => new AppShell());
+        builder.Services.AddSingleton<IPageDialogService, PageDialogService>();
         builder.Services.AddSingleton<IShellNavigation, ShellNavigation>();
         builder.Services.AddSingleton<ISqlLiteDatabase, SqlLiteDatabase>();
         

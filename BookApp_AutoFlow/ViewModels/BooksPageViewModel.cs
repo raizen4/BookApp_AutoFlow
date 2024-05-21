@@ -3,9 +3,6 @@ using System.Windows.Input;
 using BookApp_AutoFlow.Enums;
 using BookApp_AutoFlow.Interfaces;
 using BookApp_AutoFlow.Models;
-using BookApp_AutoFlow.Views;
-using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Views;
 
 namespace BookApp_AutoFlow.ViewModels;
 
@@ -13,9 +10,17 @@ public class BooksPageViewModel : BaseViewModel
 {
     private readonly IShellNavigation _shellNavigation;
     private readonly ISqlLiteDatabase _databaseService;
-    private readonly IPageDialogs _pageDialogs;
-    public ObservableCollection<Book> Books { get; set; }
-    public ICommand NavigateToBookDetailsCommand { get; set; }
+    private readonly IPageDialogService _pageDialogs;
+
+    public ObservableCollection<Book> Books
+    {
+        get=> Get<ObservableCollection<Book>>();
+        set => Set(value);
+    }
+
+    public ObservableCollection<Book> FilteredBooks {  
+        get=> Get<ObservableCollection<Book>>();
+        set => Set(value); }
     public ICommand RemoveBookCommand { get; set; }
 
     public Book SelectedBook
@@ -36,47 +41,49 @@ public class BooksPageViewModel : BaseViewModel
         ViewModelContext context, 
         IShellNavigation shellNavigation, 
         ISqlLiteDatabase databaseService,
-        IPageDialogs pageDialogs,
-        IPopupService popupService) : base(context)
+        IPageDialogService pageDialogs) : base(context)
     {
         _shellNavigation = shellNavigation;
         _databaseService = databaseService;
         _pageDialogs = pageDialogs;
-        Books = new ObservableCollection<Book>()
-        {
-            new Book {Title = "Book 1", Author = "Author 1", Description = "Description 1", PublicationYear = 2021},
-            new Book {Title = "Book 2", Author = "Author 2", Description = "Description 2", PublicationYear = 2022},
-            new Book {Title = "Book 3", Author = "Author 3", Description = "Description 3", PublicationYear = 2023},
-        };
         EditBookCommand = new Command<Book>(async (book) => await EditBookDetails(book));
         RemoveBookCommand = new Command<Book>(async (book) => await RemoveBook(book));
-        ItemSelectedCommand = new Command<Book>(async (book) => await NavigateToBookDetails(book));
+        ItemSelectedCommand = new Command(async (book) => await NavigateToBookDetails());
         PerformSearchCommand = new Command<string>( (searchText) =>  PerformSearchBooks(searchText));
         AddBookCommand = new Command( async () => await AddBook());
     }
 
-    public override async void OnResume()
+    public override async void OnAppearing()
     {
-        base.OnResume();
+        base.OnAppearing();
+        SelectedBook = null; 
         try
         {
             var fetchedBooks = await _databaseService.GetBooks();
             Books = new ObservableCollection<Book>(fetchedBooks);
+            FilteredBooks = Books;
         }
         catch (Exception e)
         {
-           await _pageDialogs.DisplayAlert("Woops", "Something went wrong", "Ok");
+            await _pageDialogs.DisplayAlert("Woops", "Something went wrong when fetching ", "Ok");
         }
     }
 
-    private void PerformSearchBooks(string searchText)
+    public void PerformSearchBooks(string searchText)
     {
-        var filteredBooks = Books.Where(book =>
-            book.Title.ToLower().Contains(searchText));
-        Books = new ObservableCollection<Book>(filteredBooks);
+        if (string.IsNullOrEmpty(searchText))
+        {
+            FilteredBooks = Books;
+        }
+        else
+        {
+            var newlyFilteredLit = Books.Where(book =>
+                book.Title.ToLower().Contains(searchText));
+            FilteredBooks = new ObservableCollection<Book>(newlyFilteredLit);
+        }
     }
 
-    private async Task EditBookDetails(Book bookToEdit)
+    public async Task EditBookDetails(Book bookToEdit)
     {
         var navigationParameter = new ShellNavigationQueryParameters
         {
@@ -85,22 +92,30 @@ public class BooksPageViewModel : BaseViewModel
         };
         await _shellNavigation.GoToAsync("AddOrUpdateBookDetailsPage", navigationParameter);
     }
-    
-    private async Task AddBook()
+
+    public async Task AddBook()
     {
         var navigationParameter = new ShellNavigationQueryParameters
         {
             {NavigationParametersConstants.UpdateBookDetailsPageNavigationParameters.OperationMode, OperationMode.Create }
         };
         
-        await _shellNavigation.GoToAsync("AddOrUpdateBookDetailsPage", navigationParameter);    
+        await _shellNavigation.GoToAsync("AddOrUpdateBookDetailsPage",navigationParameter);    
     }
 
-    private async Task RemoveBook(Book bookToRemove)
+    public async Task RemoveBook(Book bookToRemove)
     {
         try
         {
-            Books.Remove(bookToRemove);  
+          var result =  await _databaseService.DeleteBook(bookToRemove.Id);
+          if (result)
+          {
+              Books.Remove(bookToRemove);
+          }
+          else
+          {
+              await _pageDialogs.DisplayAlert("Woops", "Something went wrong removing this book. Please try again", "Ok");
+          }
         }
         catch (Exception e)
         {
@@ -108,13 +123,13 @@ public class BooksPageViewModel : BaseViewModel
         }
     }
 
-    private async Task NavigateToBookDetails(Book bookPressed)
+    private async Task NavigateToBookDetails()
     {
-        if (bookPressed != null)
+        if (SelectedBook != null)
         {
             var navigationParameter = new ShellNavigationQueryParameters
             {
-                {NavigationParametersConstants.BookDetailsPageNavigationParameters.Book, bookPressed }
+                {NavigationParametersConstants.BookDetailsPageNavigationParameters.Book, SelectedBook }
             };
             await _shellNavigation.GoToAsync("BookDetails", navigationParameter);
         }

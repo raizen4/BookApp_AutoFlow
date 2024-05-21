@@ -6,6 +6,6 @@ public interface ISqlLiteDatabase
 {
     Task<bool> SaveBook(Book bookToSave);
     Task<List<Book>> GetBooks();
-    Task<bool> DeleteBook(int bookId);
+    Task<bool> DeleteBook(Guid bookId);
     Task<bool> UpdateBook(Book bookToUpdate);
 }

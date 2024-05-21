@@ -40,7 +40,7 @@ public class SqlLiteDatabase: ISqlLiteDatabase
         }
     }
 
-    public async Task<bool> DeleteBook(int bookId)
+    public async Task<bool> DeleteBook(Guid bookId)
     {
         try
         {
@@ -57,7 +57,7 @@ public class SqlLiteDatabase: ISqlLiteDatabase
     {
        try
        {
-           var res = await _database.InsertAsync(bookToUpdate);
+           var res = await _database.UpdateAsync(bookToUpdate);
            return res > 0;
        }
        catch (Exception e)

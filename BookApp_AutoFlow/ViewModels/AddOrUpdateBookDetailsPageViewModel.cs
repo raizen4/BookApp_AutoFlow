@@ -1,14 +1,26 @@
 using System.Windows.Input;
 using BookApp_AutoFlow.Enums;
+using BookApp_AutoFlow.Interfaces;
 using BookApp_AutoFlow.Models;
+using Debug = System.Diagnostics.Debug;
 
 namespace BookApp_AutoFlow.ViewModels;
 
 public class AddOrUpdateBookDetailsPageViewModel : BaseViewModel
 {
-    public Book? Book
+    private readonly IPageDialogService _pageDialogs;
+    private readonly ISqlLiteDatabase _databaseService;
+    private readonly IShellNavigation _shellNavigation;
+
+    public Book Book
     {
         get => Get<Book>();
+        set => Set(value);
+    }
+
+    public string Title
+    {
+        get => Get<string>();
         set => Set(value);
     }
     
@@ -19,30 +31,89 @@ public class AddOrUpdateBookDetailsPageViewModel : BaseViewModel
     }
 
     public ICommand SubmitCommand { get; set; }
+    public ICommand SubmitUpdateCommand { get; set; }
+
     
-    public AddOrUpdateBookDetailsPageViewModel(ViewModelContext context) : base(context)
+    public AddOrUpdateBookDetailsPageViewModel(
+        ViewModelContext context,
+        IPageDialogService pageDialogs,
+        ISqlLiteDatabase databaseService,
+        IShellNavigation shellNavigation
+        ) : base(context)
     {
-        SubmitCommand = OperationMode == OperationMode.Create ? new Command<Book>(OnSubmitSaveForm) : new Command<Book>(OnSubmitUpdateForm);
-       
+        _pageDialogs = pageDialogs;
+        _databaseService = databaseService;
+        _shellNavigation = shellNavigation;
+        SubmitCommand = new Command(async async =>await OnSubmit());
     }
 
-    public override void OnResume()
+    private async Task OnSubmit()
     {
-        base.OnResume();
+        if (OperationMode == OperationMode.Create)
+        {
+            await OnSubmitCreateBook();
+        }
+        else
+        {
+            await OnSubmitUpdateBook();
+        }
+    }
+
+    public override void OnAppearing()
+    {
+        base.OnAppearing();
         if (OperationMode == OperationMode.Create)
         {
             Book = new Book();
+            Title = "Add Book";
         }
-        Book = new Book();
+        else
+        {
+            Title = "Update Book";
+        }
+       
+    } 
+
+    private async Task OnSubmitCreateBook()
+    {
+        try
+        {
+          var result = await _databaseService.SaveBook(Book);
+          if (result)
+          {
+              await _pageDialogs.DisplayAlert("Success", "Book has been saved", "OK");
+              await _shellNavigation.GoToAsync("..");
+          }
+          else
+          {
+              await _pageDialogs.DisplayAlert("Woops", "Something went wrong removing this book. Please try again", "Ok");
+          }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+            await _pageDialogs.DisplayAlert("Woops", "Something went wrong removing this book. Please try again", "Ok");
+        }
     }
 
-    private void OnSubmitSaveForm(Book obj)
+    private  async Task OnSubmitUpdateBook()
     {
-        
-    }
-
-    private void OnSubmitUpdateForm(Book book)
-    {
-        
+        try
+        {
+            var result = await _databaseService.UpdateBook(Book);
+            if (result)
+            {
+                await _pageDialogs.DisplayAlert("Success", "Book has been updated", "OK");
+                await _shellNavigation.GoToAsync("..");
+            }
+            else
+            {
+                await _pageDialogs.DisplayAlert("Woops", "Something went wrong updating this book. Please try again", "OK");
+            }
+        }
+        catch (Exception e)
+        {
+           await _pageDialogs.DisplayAlert("Woops", "Something went wrong updating this book. Please try again", "OK");
+        }
     }
 }

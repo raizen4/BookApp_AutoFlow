@@ -6,30 +6,52 @@
              x:Class="BookApp_AutoFlow.Views.BooksPage"
              xmlns:micro="http://schemas.mauimicromvvm.com/2022/dotnet/maui"
              xmlns:models="clr-namespace:BookApp_AutoFlow.Models"
-             xmlns:m="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              micro:MauiMicro.Autowire="True"
              Shell.NavBarIsVisible="True"
              x:DataType="viewModels:BooksPageViewModel">
-    <VerticalStackLayout VerticalOptions="FillAndExpand">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="85*" />
+            <RowDefinition Height="10*" />
+        </Grid.RowDefinitions>
         <SearchBar x:Name="searchBar"
-                   BackgroundColor="White"
-                   SearchCommand="{Binding PerformSearchCommand}"
-                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}" />
-        <Grid Padding="10" VerticalOptions="Fill">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="95*" />
-                <RowDefinition Height="5*" />
-            </Grid.RowDefinitions>
-            <CollectionView BackgroundColor="Blue" VerticalOptions="Fill" SelectedItem="{Binding SelectedBook}"
-                            SelectionChangedCommand="{Binding ItemSelectedCommand}" 
-                            ItemsSource="{Binding Books}"
-                            SelectionChangedCommandParameter="{Binding .}"
-                            SelectionMode="Single">
+                   BackgroundColor="White">
+            <SearchBar.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="TextChanged"
+                    CommandParameter="{Binding Text, Source={x:Reference searchBar}}"
+                    Command="{Binding  Path= PerformSearchCommand}" />
+            </SearchBar.Behaviors>
+        </SearchBar>
+
+        <StackLayout Grid.Row="1" VerticalOptions="Fill">
+            <CollectionView
+                SelectedItem="{Binding SelectedBook}"
+                ItemsSource="{Binding FilteredBooks}"
+                SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Book">
                         <SwipeView>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Normal" />
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
                             <Frame CornerRadius="10" Padding="10" Margin="5" HasShadow="false"
                                    BackgroundColor="{DynamicResource FrameBackgroundColor}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=ItemSelectedCommand}" />
+                                </Frame.GestureRecognizers>
+
                                 <StackLayout>
                                     <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold"
                                            TextColor="{DynamicResource PrimaryTextColor}" />
@@ -46,7 +68,7 @@
                                 <SwipeItems>
                                     <SwipeItem Text="Edit"
                                                BackgroundColor="LightGreen"
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=NavigateToBookDetailsCommand}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=EditBookCommand}"
                                                CommandParameter="{Binding .}" />
                                     <SwipeItem Text="Delete"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:BooksPageViewModel }}, Path=RemoveBookCommand}"
@@ -58,11 +80,10 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <StackLayout HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="Red" Grid.Row="1">
-                <Button VerticalOptions="End" Text="Add New Book" Command="{Binding AddBookCommand}" ></Button>
-            </StackLayout>
-        </Grid>
-    </VerticalStackLayout>
+        </StackLayout>
 
-
+        <StackLayout HorizontalOptions="Fill" VerticalOptions="End" Grid.Row="2">
+            <Button Margin="5" Text="Add New Book" Command="{Binding AddBookCommand}" />
+        </StackLayout>
+    </Grid>
 </ContentPage>
