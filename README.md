@@ -4,7 +4,7 @@
 https://github.com/raizen4/BookApp_AutoFlow/assets/15075728/a6f93b93-354f-487c-81c7-4cb98c147ee1
 
 
-BookApp_AutoFlow is a comprehensive book management application built with C#. It provides functionalities to manage books, including adding, editing, and deleting books. The application is built with a focus on clean architecture, testability, and maintainability.
+BookApp_AutoFlow is a  book management application built with .net MAUI. It provides functionalities to manage books, including adding, editing, and deleting books. The application is built with a focus on clean architecture, testability, and maintainability.
 
 ## Features
 
