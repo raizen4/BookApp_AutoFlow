@@ -26,11 +26,11 @@ BookApp_AutoFlow is a  book management application built with .net MAUI. It prov
 
 The project is structured into different folders, each serving a specific purpose:
 
-- **Models**: Contains the `Book` model.
-- **ViewModels**: Contains the `BooksPageViewModel` which handles the logic for book management.
-- **Services**: Contains the `SqlLiteDatabase` and `PageDialogService` services.
-- **Interfaces**: Contains the `ISqlLiteDatabase` and `IPageDialogService` interfaces.
-- **UnitTests**: Contains the unit tests for the `BooksPageViewModel` and `SqlLiteDatabase` classes.
+- **Models**: Contains models for this project.
+- **ViewModels**: Contains viewmodels for this project.
+- **Services**: Contains the services.
+- **Interfaces**: Contains the  interfaces.
+- **UnitTests**: Contains poc of test classes.
 
 ## Setup
 
