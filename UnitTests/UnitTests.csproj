@@ -17,14 +17,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\BookApp_AutoFlow\BookApp_AutoFlow.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\BookApp_AutoFlow\BookApp_AutoFlow.csproj" />
-    </ItemGroup>
-
 </Project>

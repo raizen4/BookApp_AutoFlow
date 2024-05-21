@@ -34,7 +34,21 @@ public class BooksPageViewModelTests
             mockShellNavigation.Object,
             mockDatabaseService.Object,
             mockPageDialogs.Object);
-
+        viewModel.Books = new ObservableCollection<Book>()
+        {
+            new Book()
+            {
+                Title = "Book 1"
+            },
+            new Book()
+            {
+                Title = "Book 2"
+            },
+            new Book()
+            {
+                Title = "Book 3"
+            },
+        };
         // Act
         viewModel.PerformSearchBooks("Book 1");
 
