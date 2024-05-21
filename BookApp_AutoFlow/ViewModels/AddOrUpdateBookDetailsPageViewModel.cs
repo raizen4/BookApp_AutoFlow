@@ -31,7 +31,6 @@ public class AddOrUpdateBookDetailsPageViewModel : BaseViewModel
     }
 
     public ICommand SubmitCommand { get; set; }
-    public ICommand SubmitUpdateCommand { get; set; }
 
     
     public AddOrUpdateBookDetailsPageViewModel(
