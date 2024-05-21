@@ -78,7 +78,7 @@ public class BooksPageViewModel : BaseViewModel
         else
         {
             var newlyFilteredLit = Books.Where(book =>
-                book.Title.ToLower().Contains(searchText));
+                book.Title.ToLower().Contains(searchText.ToLower()));
             FilteredBooks = new ObservableCollection<Book>(newlyFilteredLit);
         }
     }
